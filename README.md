@@ -6,7 +6,7 @@
 
 全体のアーキテクチャは以下のとおり。
 
-![全体アーキテクチャ](images/rosbridge_suite-WebSocket.svg "全体アーキテクチャ")
+![全体アーキテクチャ](images/ROS-WebSocket_draft.svg "全体アーキテクチャ")
 
 採用テクノロジーは以下のとおり。
 
@@ -19,16 +19,17 @@
   * Ruby v2.4.4
     * ~~[EM-WebSocket](https://github.com/igrigorik/em-websocket) v0.5.1~~ [faye-websocket](https://github.com/faye/faye-websocket-ruby) v0.10.7
 * クライアント
-  * [ROS Indigo](http://wiki.ros.org/indigo)
-  * [rosbridge_suite package](http://wiki.ros.org/rosbridge_suite)
-  * Python [websocket-client](https://github.com/websocket-client/websocket-client)
+  * [ROS Melodic](http://wiki.ros.org/melodic)
+  * [rospy](http://wiki.ros.org/rospy)
+  * Python
+    * [websocket-client](https://github.com/websocket-client/websocket-client)
 
 
 なお、以下の点は、まだ対応されていない。
 
-* WebSocket クライアントを構成する [ROS パッケージ](http://wiki.ros.org/ROS/Tutorials/CreatingPackage)
-  * ROS および WebSocket を検証するため、[rosbridge_suite package](http://wiki.ros.org/rosbridge_suite) を利用しているが、本来的には WebSocket クライアントとして機能する ROS パッケージを作成すべき（詳細は後述）
-  * [こちら](https://qiita.com/ryskiwt/items/bf33dae63561feac0f5d) が参考になるか
+* ~~WebSocket クライアントを構成する [ROS パッケージ](http://wiki.ros.org/ROS/Tutorials/CreatingPackage)~~（対応済み）
+  * ~~ROS および WebSocket を検証するため、[rosbridge_suite package](http://wiki.ros.org/rosbridge_suite) を利用しているが、本来的には WebSocket クライアントとして機能する ROS パッケージを作成すべき（詳細は後述）~~
+  * ~~[こちら](https://qiita.com/ryskiwt/items/bf33dae63561feac0f5d) が参考になるか~~
 * ~~WebSocket の SSL 化~~（対応済み）
   * ~~[Let's Encrypt](https://letsencrypt.org/) 導入予定~~
 * CI/CD
@@ -123,9 +124,16 @@ WebSocket サーバーに対する通信をセキュアにするため、SSL暗�
 
 WebSocket クライアントを実装したアプリケーションは、[こちら](https://github.com/chronushadow/websocket-client)を参照。
 
-本来は、ROS パッケージとして、ROS において、サーバーへ送信するデータの生成元となるデバイス用ノードと WebSocket クライアント用ノードで Pub/Sub を構成し、メッセージ（データ）を受信したタイミングで、WebSocket サーバーに対して送信するようにする必要がある。
+ROS パッケージとして作成しており、ROS において、サーバーへ送信するデータの生成元となるデバイス用ノードと WebSocket クライアント用ノードで Pub/Sub を構成し、メッセージ（データ）を受信したタイミングで、WebSocket サーバーに送信する。
 
-### Rosbridge_suite
+### 処理シーケンス
+
+ROS における Pub/Sub 構成、および WebSocket のクライアント／サーバー構成に基づく処理シーケンスは以下のとおり。
+
+![処理シーケンス](images/processing-sequence.svg "処理シーケンス")
+
+
+### （検証用）Rosbridge_suite
 
 ROS における WebSocket を検証するため、[Rosbrige_suite](http://wiki.ros.org/rosbridge_suite) を試行・導入。
 
